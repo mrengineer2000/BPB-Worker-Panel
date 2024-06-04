@@ -785,18 +785,23 @@ const getNormalConfigs = async (env, hostName, client) => {
         ...resolved.ipv6.map((ip) => `[${ip}]`),
     ];
 
-    Addresses.forEach((addr) => {
-        let remark = `BPB - ${addr}`;
-        remark = remark.length <= 30 ? remark : `${remark.slice(0,29)}...`;
+	const ports = [443, 2053, 2083, 2087, 2096, 8443];
 
-        vlessWsTls += 'vless' + `://${userID}@${addr}:443?encryption=none&security=tls&type=ws&host=${
-            randomUpperCase(hostName)
-        }&sni=${
-            randomUpperCase(hostName)
-        }&fp=randomized&alpn=http/1.1&path=${
-            encodeURIComponent(`/${getRandomPath(16)}?ed=2560`)
-        }#${encodeURIComponent(remark)}\n`;
-    });
+	Addresses.forEach((addr) => {
+	    ports.forEach((port) => {
+	        let remark = `BPB - ${addr}:${port}`;
+	        remark = remark.length <= 30 ? remark : `${remark.slice(0, 29)}...`;
+	
+	        vlessWsTls += `vless://${userID}@${addr}:${port}?encryption=none&security=tls&type=ws&host=${
+	            randomUpperCase(hostName)
+	        }&sni=${
+	            randomUpperCase(hostName)
+	        }&fp=randomized&alpn=http/1.1&path=${
+	            encodeURIComponent(`/${getRandomPath(16)}?ed=2560`)
+	        }#${encodeURIComponent(remark)}\n`;
+	    });
+	});
+
 
     const subscription = client === 'singbox' ? btoa(vlessWsTls) : btoa(vlessWsTls.replaceAll('http/1.1', 'h2,http/1.1'));
     return subscription;

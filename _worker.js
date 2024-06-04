@@ -778,11 +778,10 @@ const getNormalConfigs = async (env, hostName, client) => {
     const { cleanIPs } = proxySettings;
     const resolved = await resolveDNS(hostName);
     const Addresses = [
-        hostName,
-        'www.speedtest.net',
-        ...(cleanIPs ? cleanIPs.split(',') : []),
-        ...resolved.ipv4,
-        ...resolved.ipv6.map((ip) => `[${ip}]`),
+       // hostName,
+        ...(cleanIPs ? cleanIPs.split(',') : [])//,
+      //  ...resolved.ipv4,
+       // ...resolved.ipv6.map((ip) => `[${ip}]`),
     ];
 
 	const ports = [443, 2053, 2083, 2087, 2096, 8443];
